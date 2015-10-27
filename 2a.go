@@ -10,14 +10,14 @@ func main() {
 	iteration := 100
 	fmt.Println("T2 - WaitGroup")
 
-	ckeys := make(chan int)
+	crcvd := make(chan int)
 	cfibo := make(chan fibo.F)
 	cdone := make(chan bool)
 
 	go func() {
 		for {
 			select {
-			case i := <-ckeys:
+			case i := <-crcvd:
 				go func(i int) {
 					cfibo <- GetFibo(i)
 				}(i)
@@ -33,7 +33,12 @@ func main() {
 
 	tstart := time.Now()
 	for i := 0; i < iteration; i++ {
-		ckeys <- i
+		/*
+			go func(i int) {
+				cfibo <- GetFibo(i)
+			}(i)
+		*/
+		crcvd <- i
 	}
 
 	wait := true
